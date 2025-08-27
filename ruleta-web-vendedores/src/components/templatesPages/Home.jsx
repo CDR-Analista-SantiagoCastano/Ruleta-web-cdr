@@ -37,7 +37,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  height: 70vh;
 
   .text-and-buttons {
     display: flex;
