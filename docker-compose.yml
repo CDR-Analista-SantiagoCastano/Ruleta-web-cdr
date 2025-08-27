@@ -1,0 +1,71 @@
+services:
+  # === BACKEND FASTAPI ===
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    env_file:
+      - ./.env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - mysql
+      - redis
+    ports:
+    - "8000:8000"
+    restart: always
+
+  # === CELERY WORKER ===
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    container_name: celery_worker
+    env_file:
+      - ./.env
+    depends_on:
+      - backend
+      - redis
+    restart: always
+
+  # === REDIS (cola de tareas / cache) ===
+  redis:
+    image: redis:7-alpine
+    container_name: redis_server
+    restart: always
+
+  # === MYSQL (base de datos principal) ===
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_server
+    env_file:
+      - ./.env_mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/db/init:/docker-entrypoint-initdb.d
+    restart: always
+  
+  # === RULETA WEB MOSTRADOR (Frontend) ===
+  ruleta_web_mostrador:
+    build:
+      context: ./ruleta-web-mostrador
+      dockerfile: Dockerfile
+    container_name: ruleta_web_mostrador
+    restart: always
+    ports:
+      - "3000:80"
+  
+  # === RULETA WEB VENDEDORES (Frontend) ===
+  ruleta_web_vendedores:
+    build:
+      context: ./ruleta-web-vendedores
+      dockerfile: Dockerfile
+    container_name: ruleta_web_vendedores
+    restart: always
+    ports:
+      - "3001:80"
+
+# === VOLUMES ===
+volumes:
+  mysql_data:

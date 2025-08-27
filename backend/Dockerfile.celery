@@ -1,0 +1,18 @@
+# Usamos la misma base de Python que tu backend
+FROM python:3.11-slim
+
+# Directorio de trabajo
+WORKDIR /app
+
+# Copiamos los requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Instalamos dependencias
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiamos solo el código necesario para Celery
+COPY /Conexion/celery/ ./Conexion/celery/
+
+# Comando por defecto: levantar el worker de Celery
+CMD ["celery", "-A", "Conexion.celery.celery_app", "worker", "--loglevel=info"]
