@@ -94,15 +94,5 @@ def obtener_premio(
         "resultado": n_resultado,
         "premio": resultado
     }
-
-@ruleta.get("/generar_excel")
-def generar_excel(
-    db: Session = Depends(get_db)
-):
-    ruleta_obj = Ruleta()
-    
-    ruleta_obj.generar_excel(db)
-    
-    return "true"
     
     

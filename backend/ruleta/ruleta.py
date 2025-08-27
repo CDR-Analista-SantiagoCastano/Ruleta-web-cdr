@@ -11,19 +11,19 @@ class Ruleta:
         self.OPCIONES = {
             "1": {
                 "rango": {"inicial": 20000000, "final": None},
-                "premios": ["DTO. 4%", "5 LLAVEROS", "NO PREMIO", "DTO. 5%", "5 LLAVEROS", "NO PREMIO", "DTO. 6%", "5 LLAVEROS", "NO PREMIO"]
+                "premios": ["NO PREMIO", "5 LLAVEROS", "NO PREMIO", "DTO. 5%", "5 LLAVEROS", "NO PREMIO", "DTO. 6%", "5 LLAVEROS", "DTO. 4%"]
             },
             "2": {
                 "rango": {"inicial": 10000000, "final": 20000000},
-                "premios": ["DTO. 3%", "5 LLAVEROS", "NO PREMIO", "DTO. 4%", "5 LLAVEROS", "NO PREMIO", "DTO. 5%", "5 LLAVEROS", "NO PREMIO"]
+                "premios": ["NO PREMIO", "5 LLAVEROS", "NO PREMIO", "DTO. 4%", "5 LLAVEROS", "NO PREMIO", "DTO. 5%", "5 LLAVEROS", "DTO. 3%"]
             },
             "3": {
                 "rango": {"inicial": 5000000, "final": 10000000},
-                "premios": ["DTO. 2%", "5 LLAVEROS", "NO PREMIO", "DTO. 3%", "5 LLAVEROS", "NO PREMIO", "DTO. 4%", "5 LLAVEROS", "NO PREMIO"]
+                "premios": ["NO PREMIO", "5 LLAVEROS", "NO PREMIO", "DTO. 3%", "5 LLAVEROS", "NO PREMIO", "DTO. 4%", "5 LLAVEROS", "DTO. 2%"]
             },
             "0": {
                 "rango": {"inicial": 500000, "final": 1000000},
-                "premios": ["DTO. 1%", "1 LLAVEROS", "NO PREMIO", "DTO. 2%", "2 LLAVEROS", "NO PREMIO", "DTO. 3%", "1 LLAVEROS", "NO PREMIO"]
+                "premios": ["NO PREMIO", "1 LLAVEROS", "NO PREMIO", "DTO. 2%", "2 LLAVEROS", "NO PREMIO", "DTO. 3%", "1 LLAVEROS", "DTO. 1%"]
             }
         }
     
@@ -146,17 +146,35 @@ class Ruleta:
             "analista@cdr.net.co"
         ]
         
-        for correo in correos:
-            print(f"DEBUG: Encolando envío para {correo} con broker {celery_app.conf.broker_url}")
-            enviar_email_task.delay(asunto, mensaje, correo)
+        #for correo in correos:
+            #print(f"DEBUG: Encolando envío para {correo} con broker {celery_app.conf.broker_url}")
+            #enviar_email_task.delay(asunto, mensaje, correo)
 
     def generar_excel(self, db: Session):
-        datos = (
-            db.query(Cliente, Pedido)
-            .join(Pedido, Cliente.nit == Pedido.nit)
-            .all()
-        )
+        try:
+            datos = (
+                db.query(
+                    Cliente.nit,
+                    Pedido.n_pedido,
+                    Pedido.monto,
+                    Pedido.celular,
+                    Pedido.premio,
+                    Pedido.fecha
+                )
+                .join(Pedido, Cliente.nit == Pedido.nit)
+                .all()
+            )
+            
+            dataframe = pd.DataFrame(datos, columns=["nit", "n_pedido", "monto", "celular", "premio", "fecha"])
+            
+            # Ruta en el contenedor que está montada a tu máquina
+            output_path = "/app/export/reporte.xlsx"
+
+            dataframe.to_excel(output_path, index=False)
+
+            print(f"Excel guardado en: {output_path}")
+        except Exception as e:
+            print(e)
+            return False
         
-        dataframe = pd.DataFrame(datos, columns=["nit", "n_pedido", "monto", "celular", "premio", "fecha"])
-        
-        print(dataframe.head())
+        return True

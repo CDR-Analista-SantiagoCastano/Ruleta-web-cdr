@@ -1,5 +1,7 @@
 # === Documentación ===
 /documentacion/*
+/pruebas/*
+/export/*
 
 # === Env files ===
 .env

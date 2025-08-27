@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import {RouletteImages} from "../../index"
+import styled, { keyframes } from "styled-components";
 
 export function Home() {
-
   const navigate = useNavigate();
 
   function handleRedirectToForm(inicial, final) {
@@ -12,21 +10,15 @@ export function Home() {
 
   return (
     <Container>
-      <img style={{ margin: "0px" }} src="LOGO CDR.png" alt="logo" />
-
-      <div style={{ margin: "0px" }}>
-        <h1 style={{ margin: "0px" }}>GIRA Y GANA</h1>
-      </div>
-
-      <div className="text-and-buttons">
-        <p>Ingresa y obtén tu premio</p>
-        <div className="buttons">
-          <button onClick={() => handleRedirectToForm(500000, 1000000)}>Entrar</button>
-        </div>
-      </div>
-
+      <Logo src="LOGO CDR.png" alt="logo" />
       
+      <Title>🎉 GIRA Y GANA 🎉</Title>
+      
+      <Subtitle>¡Participa y gana al instante!</Subtitle>
 
+      <CTAButton onClick={() => handleRedirectToForm(500000, 1000000)}>
+        🎁 ¡Jugar ahora!
+      </CTAButton>
     </Container>
   );
 }
@@ -34,42 +26,54 @@ export function Home() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 20px;
+  height: 70vh;
+  padding: 20px;
+  text-align: center;
+`;
 
-  .text-and-buttons {
-    display: flex;
-    font-size: 1.5rem;
-    flex-direction: column;
-    align-items: center;
-    width: fit-content;
+const Logo = styled.img`
+  max-width: 40%;
+  margin-bottom: 20px;
+`;
 
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      gap: 20px;
+const Title = styled.h1`
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 10px 0;
+  text-shadow: 2px 2px 5px rgba(155,155,155,0.3);
+  animation: pulse 3s infinite;
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+`;
 
-      button { 
-        min-width: 100%;
-      }
-    }
+const Subtitle = styled.p`
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  font-weight: 500;
+`;
+
+const CTAButton = styled.button`
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 25px;
+  width: 100%;
+  max-width: 300px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
   }
 
-  img {
-    max-width: 60%;
-    max-height: 200px;
-  }
-
-  @keyframes crecerElemento {
-    0% {
-      transform: scale(1); /* Estado inicial */
-    }
-    50% {
-      transform: scale(1.2); /* Se hace más grande */
-    }
-    100% {
-      transform: scale(1); /* Vuelve a su tamaño original */
-    }
+  &:active {
+    transform: scale(0.97);
   }
 `;

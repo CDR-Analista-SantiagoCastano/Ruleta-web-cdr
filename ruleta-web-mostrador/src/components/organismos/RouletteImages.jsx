@@ -16,6 +16,7 @@ const Item = styled.div`
   }
 `;
 
+
 export function RouletteImages() {
     return (
         <Marquee speed={30} autoFill>
@@ -29,11 +30,15 @@ export function RouletteImages() {
             <Item><img src="Narva.jpg" alt="otra" /></Item>
             <Item><img src="JohnCrane.jpg" alt="otra" /></Item>
             <Item><img src="JAPAN.jpg" alt="otra" /></Item>
-            <Item><img src="NTN.jpg" alt="otra" /></Item>
+            <Item><img src="NTN.png" alt="otra" /></Item>
             <Item><img src="LYO.jpg" alt="otra" /></Item>
-            <Item><img src="NGK.jpg" alt="otra" /></Item>
-            <Item><img src="TRANSEJES.jpg" alt="otra" /></Item>
-            <Item><img src="PFI.jpg" alt="otra" /></Item>
+            <Item><img src="NGK.png" alt="otra" /></Item>
+            <Item><img src="TRANSEJES.png" alt="otra" /></Item>
+            <Item><img src="PFI.png" alt="otra" /></Item>
+            <Item><img src="FORERUNNER.png" alt="otra" /></Item>
+            <Item><img src="SPICER.jpg" alt="otra" /></Item>
+            <Item><img src="MERITOR.png" alt="otra" /></Item>
+            <Item><img src="HCH.jpg" alt="otra" /></Item>
         </Marquee>
     );
 }

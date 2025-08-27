@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import {RouletteImages} from "../../index"
 
 export function Home() {
 
@@ -38,6 +37,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  height: 70vh;
 
   .text-and-buttons {
     display: flex;
@@ -61,17 +61,5 @@ const Container = styled.div`
   img {
     max-width: 60%;
     max-height: 200px;
-  }
-
-  @keyframes crecerElemento {
-    0% {
-      transform: scale(1); /* Estado inicial */
-    }
-    50% {
-      transform: scale(1.2); /* Se hace más grande */
-    }
-    100% {
-      transform: scale(1); /* Vuelve a su tamaño original */
-    }
   }
 `;

@@ -8,6 +8,6 @@ CREATE TABLE pedidos (
     monto DECIMAL(15,2) NOT NULL,
     celular VARCHAR(15) NOT NULL,
     premio VARCHAR(50) NOT NULL,
-    fecha DATE NOT NULL,
+    fecha DATETIME NOT NULL,
     FOREIGN KEY (nit) REFERENCES clientes(nit)
 );

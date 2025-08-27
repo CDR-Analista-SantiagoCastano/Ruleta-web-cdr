@@ -39,7 +39,6 @@ export const Input = ({ label, type, id, placeholder, validation, name }) => {
                         display: "flex",
                         alignItems: "end"
                     }}
-                    onWheel={(e) => e.target.blur()}
                 >
                     {label}
                 </label>
@@ -55,6 +54,7 @@ export const Input = ({ label, type, id, placeholder, validation, name }) => {
             <input
                 id={id}
                 type={type}
+                onWheel={(e) => e.target.blur()}
                 style={{
                     maxWidth: "100%",          // w-full
                     padding: "1.25rem",     // p-5
