@@ -8,3 +8,4 @@ redis==5.2.0
 cryptography
 pandas
 openpyxl
+typer
