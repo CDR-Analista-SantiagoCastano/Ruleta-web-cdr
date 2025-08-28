@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from ruleta.ruleta import Ruleta
 
 def generar_excel():
+    '''Genera un archivo Excel con los resultados de la ruleta'''
     db = next(get_db())
     try:
         ruleta_obj = Ruleta()

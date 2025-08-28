@@ -5,6 +5,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class EmailSender:
+    '''Clase encargada de enviar correos electrónicos'''
+    
     def __init__(self):
         load_dotenv()
         self.__email = os.getenv("EMAIL_CORREO")
@@ -13,6 +15,13 @@ class EmailSender:
         self.__port = 587
 
     def enviar_email(self, asunto, mensaje, correo):
+        '''
+            Recibe un mensaje en formato HTML y lo envía al correo especificado\n
+            Las variables que recibe son\n
+                asunto: El asunto del correo\n
+                mensaje: El contenido del correo en formato HTML\n
+                correo: El correo electrónico del destinatario\n
+        '''
         try:
             servidor = smtplib.SMTP(self.__smtp_server, self.__port)
             servidor.starttls()

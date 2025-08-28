@@ -4,13 +4,19 @@ from Conexion.celery.celery_app import celery_app
 from ruleta.models import Cliente, Pedido
 from sqlalchemy.orm import Session
 import pandas as pd
+import datetime
 
 
 class Ruleta:
+    
+    ''' Clase que se encarga de llevar a cabo toda la logica interna del proceso del juego  
+        Cuando se inicializa, esta crea una variable interna titulada "OPCIONES" en la cual va a estar todas las opciones de premios.
+    '''
+    
     def __init__ (self,):
         self.OPCIONES = {
             "1": {
-                "rango": {"inicial": 20000000, "final": None},
+                "rango": {"inicial": 20000000, "final": float('inf')},
                 "premios": ["NO PREMIO", "5 LLAVEROS", "NO PREMIO", "DTO. 5%", "5 LLAVEROS", "NO PREMIO", "DTO. 6%", "5 LLAVEROS", "DTO. 4%"]
             },
             "2": {
@@ -27,10 +33,21 @@ class Ruleta:
             }
         }
     
-    def ingresar_monto(self, monto):
+    def ingresar_monto(self, monto: float) -> None:
+        '''
+        En espera de las variables:  
+        monto: hace referencia a el valor del pedido realizado por el cliente u usuario  
+        \nSe define la variable interna "monto"
+        '''
+        if not isinstance(monto, (int, float)) or monto <= 0:
+            raise ValueError("El monto debe ser un número positivo")
         self.monto = monto
     
     def calcular_premio(self, ):
+        '''
+            Con base en el monto ingresado, se determina a que rango pertenece y se devuelven los premios asociados a ese rango  
+            DEVUELVE una lista de premio ( [] )
+        '''
         premios = []
         for rango, opcion in self.OPCIONES.items():
             if self.monto >= opcion["rango"]["inicial"] and (opcion["rango"]["final"] is None or self.monto < opcion["rango"]["final"]):
@@ -39,7 +56,13 @@ class Ruleta:
         
         return premios
     
-    def calcular_resultado(self, premios):
+    def calcular_resultado(self, premios = []):
+        '''
+            Con base en los premios disponibles, se determina el resultado de la ruleta\n
+            las variables que recibe son:
+                premios: lista de premios disponibles  
+            \n\nDEVUELVE: el índice (tipo int) y el premio (tipo string) seleccionado de forma aleatoria
+        '''
         numero_flotante_aleatorio = random.random()
     
         for i in range(len(premios)):
@@ -51,7 +74,16 @@ class Ruleta:
         
         return n_resultado, resultado
 
-    def enviar_email(self, resultado, fecha, monto, nit, n_pedido):
+    def enviar_email(self, resultado, fecha, monto, nit, n_pedido) -> None:
+        '''
+            Envía un correo electrónico a los emails registrados con el resultado de la ruleta\n
+            Las variables a recibir son:\n
+                resultado: El resultado de la ruleta
+                fecha: La fecha en que se realizó el pedido
+                monto: El monto del pedido
+                nit: El NIT del cliente
+                n_pedido: El número de pedido
+        '''
         asunto = f"🎉 Nuevo resultado de la Ruleta de Premios | Pedido: {n_pedido}"
 
         mensaje = f"""
@@ -151,6 +183,10 @@ class Ruleta:
             #enviar_email_task.delay(asunto, mensaje, correo)
 
     def generar_excel(self, db: Session):
+        ''' 
+            Genera un excel resumen de todos los pedidos que se encuentran en la base de datos  
+            db: objeto de tipo Session que tiene como funcion servir de conexión a la base de datos
+        '''
         try:
             datos = (
                 db.query(

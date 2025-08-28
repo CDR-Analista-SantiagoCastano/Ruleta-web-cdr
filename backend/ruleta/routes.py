@@ -14,6 +14,7 @@ def opciones_ruleta(
     data: DatosClienteRequest,
     db: Session = Depends(get_db)
 ):
+    '''Endpoint para obtener la lista de opciones de la ruleta en base al monto del pedido realizado por el cliente'''
     pedido = db.query(Pedido).filter(Pedido.n_pedido == data.n_pedido).first()
     
     if pedido:
@@ -40,6 +41,11 @@ def obtener_premio(
         data: DatosClienteRequest
     ,   db: Session = Depends(get_db)
 ):
+    '''Endpoint para obtener el premio de la ruleta'''
+    pedido = db.query(Pedido).filter(Pedido.n_pedido == data.n_pedido).first()
+    if pedido:
+        raise HTTPException(status_code=401, detail="El pedido ya ha participado en el concurso")
+    
     ruleta_obj = Ruleta()
     ruleta_obj.ingresar_monto(data.monto)
     
@@ -47,10 +53,6 @@ def obtener_premio(
     n_resultado, resultado = ruleta_obj.calcular_resultado(premios)
     
     gano = resultado != "NO PREMIO"
-    
-    pedido = db.query(Pedido).filter(Pedido.n_pedido == data.n_pedido).first()
-    if pedido:
-        raise HTTPException(status_code=401, detail="El pedido ya ha participado en el concurso")
     
     cliente = db.query(Cliente).filter(Cliente.nit == data.nit).first()
     if not cliente:
@@ -63,10 +65,6 @@ def obtener_premio(
             db.flush()
         except Exception as e:
             db.rollback()
-            print(data.nit)
-            print(data.celular)
-            print(data.monto)
-            print(data.n_pedido)
             print(e)
             raise HTTPException(status_code=401, detail="Hay un error interno, llame al area tecnica")
     
@@ -84,7 +82,7 @@ def obtener_premio(
         db.commit()
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=401, detail="Hay un error interno, llame al area tecnica")
+        raise HTTPException(status_code=401, detail="Hay un error interno. Llame al area tecnica")
 
     if gano:
         ruleta_obj.enviar_email(resultado, now_colombia(), data.monto, data.nit, data.n_pedido)
