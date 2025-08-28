@@ -11,9 +11,9 @@ export function Home() {
   return (
     <Container>
       <Logo src="LOGO CDR.png" alt="logo" />
-      
+
       <Title>🎉 GIRA Y GANA 🎉</Title>
-      
+
       <Subtitle>¡Participa y gana al instante!</Subtitle>
 
       <CTAButton onClick={() => handleRedirectToForm(500000, 1000000)}>
@@ -34,8 +34,9 @@ const Container = styled.div`
 `;
 
 const Logo = styled.img`
-  max-width: 40%;
-  margin-bottom: 20px;
+    max-width: 60%;
+    max-height: 200px;
+    margin-bottom: 20px;
 `;
 
 const Title = styled.h1`
