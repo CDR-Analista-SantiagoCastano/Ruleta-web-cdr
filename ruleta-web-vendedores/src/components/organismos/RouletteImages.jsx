@@ -27,7 +27,7 @@ export function RouletteImages() {
             <Item><img src="PIRELLI.png" alt="otra" /></Item>
             <Item><img src="VEE RUBBER LOGO 2021.jpg" alt="otra" /></Item>
             <Item><img src="Narva.jpg" alt="otra" /></Item>
-            <Item><img src="JohnCrane.jpg" alt="otra" /></Item>
+            <Item><img src="JOHN CRANE LOGO.png" alt="otra" /></Item>
             <Item><img src="JAPAN.jpg" alt="otra" /></Item>
             <Item><img src="NTN.png" alt="otra" /></Item>
             <Item><img src="LYO.jpg" alt="otra" /></Item>
