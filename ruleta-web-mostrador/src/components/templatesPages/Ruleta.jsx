@@ -226,8 +226,8 @@ const Container = styled.div`
   position: relative;
 
   img {
-    max-width: 60%;
-    max-height: 200px;
+    max-width: 50%;
+    max-height: 150;
   }
 
   .logo {
