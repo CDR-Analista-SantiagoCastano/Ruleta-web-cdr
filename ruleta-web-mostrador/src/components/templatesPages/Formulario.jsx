@@ -144,6 +144,10 @@ export function Formulario() {
                                 required: {
                                     value: true,
                                     message: 'Obligatorio'
+                                },
+                                maxLength: {
+                                    value: 15,
+                                    message: 'Longitud maxima de 15 caracteres'
                                 }
                             }}
                         />
