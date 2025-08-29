@@ -32,7 +32,7 @@ def opciones_ruleta(
         "nit": data.nit,
         "n_pedido": data.n_pedido,
         "monto": data.monto,
-        "celular": data.celular,
+        "celular": str(data.celular),
         "premios": premios
     }
 

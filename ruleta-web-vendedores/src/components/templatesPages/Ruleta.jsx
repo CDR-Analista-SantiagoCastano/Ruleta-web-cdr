@@ -239,16 +239,16 @@ const Container = styled.div`
 
   img {
     max-width: 50%;
-    max-height: 150;
+    max-height: 5em;
   }
 
   .logo {
     position: absolute;
-    top: -70px;
+    top: -40px;
     left: 50%;
     transform: translateX(-50%);
     max-width: 180px;
-    z-index: 0; /* siempre al fondo */
+    z-index: 10;
     pointer-events: none;
   }
 

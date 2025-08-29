@@ -79,7 +79,7 @@ export function Formulario() {
                         <Input
                             label={"NIT"}
                             name="nit"
-                            type="text"
+                            type="int"
                             id="nit"
                             placeholder="Ingresa tu nit"
                             validation={{
@@ -87,9 +87,9 @@ export function Formulario() {
                                     value: true,
                                     message: 'Obligatorio'
                                 },
-                                minLength: {
+                                min: {
                                     value: 4,
-                                    message: 'Longitud minima de 4 caracteres'
+                                    message: 'Longitud minima de 4 digitos'
                                 }
                             }}
                         />
@@ -106,7 +106,7 @@ export function Formulario() {
                                     message: 'Obligatorio'
                                 },
                                 min: {
-                                    value: 1,
+                                    value: 1000,
                                     message: 'Ingresa un numero valido'
                                 }
                             }}
