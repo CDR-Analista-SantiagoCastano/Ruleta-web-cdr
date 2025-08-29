@@ -31,6 +31,8 @@ services:
       - backend
       - redis
     restart: always
+    volumes:
+      - ./logs:/app/logs
 
   # === REDIS (cola de tareas / cache) ===
   redis:

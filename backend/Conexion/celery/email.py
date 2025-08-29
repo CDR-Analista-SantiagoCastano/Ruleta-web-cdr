@@ -22,22 +22,17 @@ class EmailSender:
                 mensaje: El contenido del correo en formato HTML\n
                 correo: El correo electrónico del destinatario\n
         '''
-        try:
-            servidor = smtplib.SMTP(self.__smtp_server, self.__port)
-            servidor.starttls()
-            servidor.login(self.__email, self.__clave)
-            
-            msg = MIMEMultipart("alternative")
-            msg["From"] = self.__email
-            msg["To"] = correo
-            msg["Subject"] = asunto
-            msg.attach(MIMEText(mensaje, "html"))
-            servidor.sendmail(self.__email, correo, msg.as_string())
+        servidor = smtplib.SMTP(self.__smtp_server, self.__port)
+        servidor.starttls()
+        servidor.login(self.__email, self.__clave)
+        
+        msg = MIMEMultipart("alternative")
+        msg["From"] = self.__email
+        msg["To"] = correo
+        msg["Subject"] = asunto
+        msg.attach(MIMEText(mensaje, "html"))
+        servidor.sendmail(self.__email, correo, msg.as_string())
 
-            servidor.quit()
-            print("Mensajes enviados con éxito ✅")
-            return {"success": True, "message": ""}
-
-        except Exception as e:
-            print(f"Error al enviar correos: {str(e)}")
-            return {"success": False, "message": str(e)}
+        servidor.quit()
+        print("Mensajes enviados con éxito ✅")
+        return {"success": True, "message": ""}
