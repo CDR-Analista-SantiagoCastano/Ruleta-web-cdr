@@ -13,9 +13,9 @@ export async function GetPremios(datos) {
   }
 }
 
-export async function GetResultado(datos) {
+export async function GetResultado() {
   try {
-    const response = await api.post("/api/premio", datos);
+    const response = await api.post("/api/premio");
 
     return { error: false, resultado: response.data };
   } catch (error) {

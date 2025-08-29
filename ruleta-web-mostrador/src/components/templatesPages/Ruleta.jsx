@@ -17,15 +17,12 @@ export function Ruleta() {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
 
-  const nit = state?.nit;
-  const n_pedido = state?.n_pedido;
-  const monto = state?.monto;
-  const celular = state?.celular;
-
+  //RECUPERA LOS DATOS DEL BACKEND QUE SON RECIBIDOS EN LA PANTALLA ANTERIOR
   const [gano, setGano] = useState(false);
 
   const premiosData = state?.premios?.map((p) => ({ option: p })) || [];
 
+  //CARGA LOS SONIDOS DE GANAS, PERDER Y RULETA
   const [playSoundRoulette, { stop: stopSoundRoulette }] = useSound("ruleta-snido-recortado.mp3", {
     volume: 0.75,
     loop: false,
@@ -120,15 +117,8 @@ export function Ruleta() {
 
     setIsSpinning(true);
 
-    const datos = {
-      nit: nit,
-      n_pedido: n_pedido,
-      monto: monto,
-      celular: celular
-    };
-
     try {
-      const response = await GetResultado(datos);
+      const response = await GetResultado();
 
       if (!response.error) {
         setGano(response.resultado.gano);
@@ -176,8 +166,6 @@ export function Ruleta() {
           </span>
         </h1>
       </div>
-
-      <p style={{ margin: "0px" }}>NIT: {nit}, PEDIDO: {n_pedido}, CELULAR: {celular} </p>
 
       {premiosData.length > 0 && (
         <div className="ruleta-container">
