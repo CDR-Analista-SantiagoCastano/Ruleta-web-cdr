@@ -9,5 +9,7 @@ CREATE TABLE pedidos (
     celular VARCHAR(15) NOT NULL,
     premio VARCHAR(50) NOT NULL,
     fecha DATETIME NOT NULL,
+    latitud DECIMAL(10,7),
+    longitud DECIMAL(10,7),
     FOREIGN KEY (nit) REFERENCES clientes(nit)
 );

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { GetPremios, Input } from "../../index"
 import Swal from "sweetalert2";
 import { FormProvider, useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 export function Formulario() {
 
@@ -12,41 +13,55 @@ export function Formulario() {
     const rango_inicial = state?.inicial;
     const rango_final = state?.final;
 
-    const handleRedirectRuleta = async (e) => {
-        e.preventDefault();
+    const methods = useForm();
 
-        const datos = {
-            nit: e.target.nit.value,
-            n_pedido: e.target.n_pedido.value,
-            monto: e.target.monto.value,
-            celular: e.target.celular.value,
-        };
+    useEffect(() => {
+        Swal.fire({
+            title: "Información importante",
+            text: "Te recomendamos activar la geolocalización para una mejor experiencia y registro de tus datos.",
+            icon: "info",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "#2563eb", // azul
+        });
+    }, []);
 
-        // Llamar API
-        const response = await GetPremios(datos);
+    // 🚩 Función para solicitar ubicación
+    const solicitarUbicacion = () => {
+        return new Promise((resolve) => {
+            if (!navigator.geolocation) {
+                console.warn("Tu navegador no soporta geolocalización");
+                resolve(null); // devolvemos null si no hay soporte
+                return;
+            }
 
-        // Mandar la respuesta a otra página
-        if (!response.error) {
-            navigate("/ruleta", { state: response.premios });
-        } else {
-            Swal.fire({
-                title: "Error",
-                text: response.detail,
-                icon: "error"
-            });
-        }
-
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const coords = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    resolve(coords);
+                },
+                (error) => {
+                    console.warn("No se pudo obtener la ubicación:", error.message);
+                    resolve(null); // si el usuario niega o falla, seguimos con null
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        });
     };
-
-    const methods = useForm()
 
     const onSubmit = methods.handleSubmit(async (data) => {
 
+        const coords = await solicitarUbicacion();
+
+        console.log("Coordenadas obtenidas:", coords);
         const datos = {
             nit: data.nit,
             n_pedido: data.n_pedido,
             monto: data.monto,
             celular: data.celular,
+            coordenadas: coords,
         };
 
         // Llamar API

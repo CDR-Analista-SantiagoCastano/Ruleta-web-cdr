@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 class DatosClienteRequest(BaseModel):
@@ -6,3 +6,4 @@ class DatosClienteRequest(BaseModel):
     n_pedido: int
     monto: float
     celular: str
+    coordenadas: Optional[List[float]] = None

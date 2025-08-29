@@ -19,3 +19,5 @@ class Pedido(Base):
     celular = Column(String(15), nullable=False)
     premio = Column(String(50), nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow, nullable=False)
+    latitud = Column(DECIMAL(10, 7), nullable=True)
+    longitud = Column(DECIMAL(10, 7), nullable=True)

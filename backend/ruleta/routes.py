@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, Request
+from fastapi import APIRouter, Depends, HTTPException, Response, Request, Cookie
 from sqlalchemy.orm import Session
 from Conexion.db import get_db
 from ruleta.models import Cliente, Pedido
@@ -44,16 +44,18 @@ def opciones_ruleta(
         "n_pedido": data.n_pedido,
         "monto": data.monto,
         "celular": str(data.celular),
-        "premios": premios
+        "premios": premios,
+        "coordenadas": data.coordenadas,
     }
-    redis_client.setex_client(session_id, session_data=json.dumps(session_data), timeout=SESSION_EXPIRATION)
+    print(data.coordenadas)
+    redis_client.setex_client(session_id, json.dumps(session_data), SESSION_EXPIRATION)
 
     # Enviar cookie segura HttpOnly
     response.set_cookie(
         key="session_id",
         value=session_id,
         httponly=True,
-        secure=True,      # ⚠️ en producción con HTTPS
+        secure=False,      # ⚠️ en producción con HTTPS
         samesite="Strict",  # Previene CSRF básico
         max_age=SESSION_EXPIRATION
     )
@@ -63,14 +65,14 @@ def opciones_ruleta(
 
 @ruleta.post("/premio")
 def obtener_premio(
-    request: Request,
+    session_id: str = Cookie(None),
     db: Session = Depends(get_db)
 ):
     """
     Endpoint para obtener el premio de la ruleta
     Valida el session_id de la cookie contra Redis
     """
-    session_id = request.cookies.get("session_id")
+    print("Session ID from cookie:", session_id)  # Debugging line
     if not session_id:
         raise HTTPException(status_code=401, detail="Sesión no encontrada")
 
@@ -112,7 +114,9 @@ def obtener_premio(
         monto=session_data["monto"],
         celular=session_data["celular"],
         premio=resultado,
-        fecha=now_colombia()
+        fecha=now_colombia(),
+        latitud=session_data["coordenadas"][0] if session_data.get("coordenadas") else None,
+        longitud=session_data["coordenadas"][1] if session_data.get("coordenadas") else None,
     )
 
     try:
