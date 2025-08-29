@@ -178,9 +178,9 @@ class Ruleta:
             "analista@cdr.net.co"
         ]
         
-        #for correo in correos:
-            #print(f"DEBUG: Encolando envío para {correo} con broker {celery_app.conf.broker_url}")
-            #enviar_email_task.delay(asunto, mensaje, correo)
+        for correo in correos:
+            print(f"DEBUG: Encolando envío para {correo} con broker {celery_app.conf.broker_url}")
+            enviar_email_task.delay(asunto, mensaje, correo)
 
     def generar_excel(self, db: Session):
         ''' 
