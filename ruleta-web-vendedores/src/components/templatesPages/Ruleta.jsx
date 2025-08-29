@@ -185,7 +185,8 @@ export function Ruleta() {
             mustStartSpinning={mustSpin}
             prizeNumber={prizeNumber}
             data={premiosData}
-            spinDuration={0.8} // Se puede ajustar para una sensación más rápida o lenta
+            spinDuration={2}
+            disableInitialAnimation={true}
             backgroundColors={[
               "#6A1B9A", // Morado
               "#D82133", // Rojo
