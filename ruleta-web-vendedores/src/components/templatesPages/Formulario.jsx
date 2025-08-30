@@ -13,48 +13,86 @@ export function Formulario() {
     const rango_inicial = state?.inicial;
     const rango_final = state?.final;
 
-    const methods = useForm()
+    const methods = useForm();
 
-    useEffect(() => {
-        Swal.fire({
-            title: "Información importante",
-            text: "Te recomendamos activar la geolocalización para una mejor experiencia y registro de tus datos.",
-            icon: "info",
-            confirmButtonText: "Entendido",
-            confirmButtonColor: "#2563eb", // azul
-        });
-    }, []);
-
-    // 🚩 Función para solicitar ubicación
-    const solicitarUbicacion = () => {
+    const obtenerCoordenadas = () => {
         return new Promise((resolve) => {
             if (!navigator.geolocation) {
-                console.warn("Tu navegador no soporta geolocalización");
-                resolve(null); // devolvemos null si no hay soporte
+                console.error("Geolocalización no soportada por el navegador.");
+                resolve(null);
                 return;
             }
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const coords = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                    };
+                    const coords = [
+                        position.coords.latitude,
+                        position.coords.longitude,
+                    ];
                     resolve(coords);
                 },
                 (error) => {
-                    console.warn("No se pudo obtener la ubicación:", error.message);
-                    resolve(null); // si el usuario niega o falla, seguimos con null
+                    // El error puede ser por denegación, timeout, etc.
+                    console.error("Error al obtener la geolocalización:", error.message);
+                    resolve(null);
                 },
-                { enableHighAccuracy: true, timeout: 10000 }
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // maximumAge: 0 fuerza una nueva lectura
             );
         });
     };
 
+    const solicitarUbicacionConMejorUX = async () => {
+        // 1. Verificar si la API de Permisos está disponible
+        if (!navigator.permissions || !navigator.permissions.query) {
+            // Si no está soportada, vamos directamente al método antiguo
+            return await obtenerCoordenadas();
+        }
+
+        // 2. Consultar el estado del permiso de geolocalización
+        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+
+        // 3. Actuar según el estado del permiso
+        if (permissionStatus.state === 'granted') {
+            // El usuario ya ha dado permiso antes. ¡Genial!
+            return await obtenerCoordenadas();
+        }
+
+        if (permissionStatus.state === 'prompt') {
+            // Aún no se ha preguntado. Mostramos nuestro modal para "preparar" al usuario.
+            const userConfirmation = await Swal.fire({
+                title: "¡Participa en la campaña!",
+                text: "Para continuar, necesitamos acceder a tu ubicación. Esto nos ayuda a entender desde dónde participan nuestros usuarios. ¿Aceptas?",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonText: "Sí, compartir ubicación",
+                cancelButtonText: "No, continuar sin compartir",
+            });
+
+            if (userConfirmation.isConfirmed) {
+                // El usuario aceptó en nuestro modal, AHORA disparamos el prompt del navegador.
+                // Ahora el usuario estará esperando el prompt y sabrá qué hacer.
+                return await obtenerCoordenadas();
+            } else {
+                // El usuario decidió no compartir desde nuestro modal.
+                return null;
+            }
+        }
+
+        if (permissionStatus.state === 'denied') {
+            // El usuario ya denegó el permiso. El navegador no volverá a preguntar.
+            // Debemos informarle cómo activarlo manualmente.
+            await Swal.fire({
+                title: "Acceso a ubicación bloqueado",
+                text: "Parece que has bloqueado el acceso a tu ubicación para este sitio. Por favor, habilítalo en la configuración de tu navegador para poder participar con tu geolocalización.",
+                icon: "warning",
+            });
+            return null;
+        }
+    };
 
     const onSubmit = methods.handleSubmit(async (data) => {
 
-        const coords = await solicitarUbicacion();
+        const coords = await solicitarUbicacionConMejorUX();
         console.log("Coordenadas obtenidas:", coords);
         const datos = {
             nit: data.nit,

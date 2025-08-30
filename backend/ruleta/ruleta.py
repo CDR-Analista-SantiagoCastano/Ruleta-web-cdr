@@ -195,13 +195,15 @@ class Ruleta:
                     Pedido.monto,
                     Pedido.celular,
                     Pedido.premio,
-                    Pedido.fecha
+                    Pedido.fecha,
+                    Pedido.latitud,
+                    Pedido.longitud,
                 )
                 .join(Pedido, Cliente.nit == Pedido.nit)
                 .all()
             )
             
-            dataframe = pd.DataFrame(datos, columns=["nit", "n_pedido", "monto", "celular", "premio", "fecha"])
+            dataframe = pd.DataFrame(datos, columns=["nit", "n_pedido", "monto", "celular", "premio", "fecha", "latitud", "longitud"])
             
             # Ruta en el contenedor que está montada a tu máquina
             output_path = "/app/export/reporte.xlsx"

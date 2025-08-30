@@ -13,7 +13,13 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://santiagocastanoacevedo.site", 
+        "http://www.santiagocastanoacevedo.site", 
+        "http://localhost:3000", 
+        "https://santiagocastanoacevedo.site",
+        "https://www.santiagocastanoacevedo.site",
+        ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
